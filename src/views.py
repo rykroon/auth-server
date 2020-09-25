@@ -4,7 +4,7 @@ from flask import Blueprint, request, jsonify
 from flask.views import MethodView
 import jwt
 import exceptions as exc
-from tokens import create_access_token, create_refresh_token, get_access_token_response, get_error_response
+from tokens import create_access_token, create_refresh_token, decode_token
 
 
 oauth = Blueprint('oauth', __name__)
@@ -13,9 +13,7 @@ oauth = Blueprint('oauth', __name__)
 @oauth.route('/oauth/token', methods=['POST'])
 class Token(MethodView):
     def post(self):
-        payload = request.get_json()
-
-        grant_type = payload.get('grant_type')
+        grant_type = request.json.get('grant_type')
 
         if grant_type == 'authorization_code':
             pass
@@ -36,9 +34,8 @@ class Token(MethodView):
             client_id, client_secret = request.authorization
 
         else:
-            payload = request.get_json()
-            client_id = payload().get('client_id')
-            client_secret = payload.get('client_secret')
+            client_id = request.json.get('client_id')
+            client_secret = request.json.get('client_secret')
 
         return jsonify(
             access_token=create_access_token(sub=client_id),
@@ -48,12 +45,15 @@ class Token(MethodView):
         )
 
     def refresh_token(self):
-        payload = request.get_json()
-        refresh_token = payload.get('refresh_token')
-        jwt_secret_key = os.getenv('JWT_SECRET_KEY')
-        jwt_payload = jwt.decode(refresh_token, key=jwt_secret_key)
+        refresh_token = request.json.get('refresh_token')
+        jwt_payload = decode_token(refresh_token)
+
+        if jwt_payload.get('type') != 'refresh':
+            raise exc.InvalidGrant('Invalid token.')
 
         sub = jwt_payload.get('sub')
         return jsonify(
-            access_token=create_access_token(sub=sub)
+            access_token=create_access_token(sub=sub),
+            token_type='bearer',
+            expires_in=''
         )
