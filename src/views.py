@@ -9,9 +9,33 @@ from tokens import create_access_token, create_refresh_token, decode_token
 
 oauth = Blueprint('oauth', __name__)
 
+class OauthView(MethodView):
 
-@oauth.route('/oauth/token', methods=['POST'])
-class Token(MethodView):
+    def get_param(self, param_name, required=True, default=None):
+        param_value = request.json.get(param_name, default)
+        if required and not param_value:
+            raise Exception
+        return param_value
+
+
+class Authorize(OauthView):
+    def get(self):
+        pass
+
+    def post(self):
+        pass
+
+    def authorization_request(self):
+        response_type = self.get_param('response_type')
+        client_id = self.get_param('client_id')
+        code_challenge = self.get_param('code_challenge')
+        code_challenge_method = self.get_param('code_challenge_method', default='plain')
+        redirect_uri = self.get_param('redirect_uri', required=False)
+        scope = self.get_param('scope', required=False)
+        state = self.get_param('state', required=False)
+
+
+class Token(OauthView):
     def post(self):
         grant_type = request.json.get('grant_type')
 
