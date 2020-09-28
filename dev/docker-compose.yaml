@@ -1,0 +1,19 @@
+version: '3'
+services:
+  auth_svc:
+    build: ./dev
+    container_name: auth
+    # env_file:
+    #   - dev/.env
+    image: auth_img
+    networks:
+      - auth_network
+mongodb_svc:
+    container_name: auth_mongo
+    image: mongo
+    networks:
+        - auth_network
+    ports:
+        - "27017:27017"
+networks:
+  auth_network:
