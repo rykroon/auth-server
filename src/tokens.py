@@ -6,13 +6,33 @@ import jwt
 
 
 JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
-#JWT_AUTHORIZATION_CODE_EXPIRES = int(os.getenv('JWT_AUTHORIZATION_CODE_TTL'), 60) #defaults to 1 minute
+JWT_AUTHORIZATION_CODE_TTL = int(os.getenv('JWT_AUTHORIZATION_CODE_TTL'), 60) #defaults to 1 minute
 JWT_ACCESS_TOKEN_TTL = int(os.getenv('JWT_ACCESS_TOKEN_TTL', 3600)) #defaults to 1 hour
 JWT_REFRESH_TOKEN_TTL = int(os.getenv('JWT_REFRESH_TOKEN_TTL', 86400)) #defaults to 1 day
 
 
 #https://tools.ietf.org/html/rfc7519
 #https://tools.ietf.org/html/draft-ietf-oauth-access-token-jwt-07
+
+
+def create_authorization_code(code_challenge, code_challenge_method):
+    headers = {
+        "typ": "ac+jwt"
+    }
+
+    payload = {
+        "code_challenge": code_challenge,
+        "code_challenge_method": code_challenge_method,
+        "exp": datetime.utcnow() + timedelta(seconds=JWT_AUTHORIZATION_CODE_TTL),
+        "iat": datetime.utcnow(),
+        "jti": str(uuid.uuid4())
+    }
+
+    return jwt.encode(
+        payload=payload, 
+        key=JWT_SECRET_KEY, 
+        headers=headers
+    )
 
 
 def create_access_token(sub, ttl=None):
