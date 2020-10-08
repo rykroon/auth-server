@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 import os
 import uuid
-from flask import jsonify
+from flask import request, jsonify
 import jwt
 
 
@@ -20,6 +20,7 @@ def create_access_token(sub, ttl=None):
     }
 
     payload = {
+        "iss": 
         "sub": sub,
         "exp": datetime.utcnow() + timedelta(seconds=ttl or JWT_ACCESS_TOKEN_TTL),
         "iat": datetime.utcnow(),
