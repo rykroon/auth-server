@@ -20,43 +20,29 @@ class BaseModel(Document):
     date_updated = DateTimeField(required=True)
 
     def clean(self):
-        self.date_created = datetime.utcnow()
+        self.date_updated = datetime.utcnow()
 
 
-CONFIDENTIAL = 'confidential'
-PUBLIC = 'public'
-CLIENT_TYPES = (CONFIDENTIAL, PUBLIC)
+PASSWORD_AUTHENTICATION = 'password-authentication'
+EMAIL_LINK_AUTHENTICATION = 'email-link-authentication'
+GOOGLE_SIGN_IN = 'google-sign-in'
+FACEBOOK_LOGIN = 'facebook-login'
+PHONE_NUMBER = 'phone-number'
 
-WEB_APPLICATION = 'web application'
-BROWSER_BASED_APPLICATION = 'browser-based application'
-NATIVE_APPLICATION = 'native application'
-CLIENT_PROFILES = (
-    WEB_APPLICATION, 
-    BROWSER_BASED_APPLICATION, 
-    NATIVE_APPLICATION
+AUTHENTICATION_METHODS = (
+    PASSWORD_AUTHENTICATION, 
+    EMAIL_LINK_AUTHENTICATION,
+    GOOGLE_SIGN_IN,
+    FACEBOOK_LOGIN,
+    PHONE_NUMBER
 )
-
-CLIENT_PROFILE_TYPE_MAPPING = {
-    WEB_APPLICATION:            CONFIDENTIAL,
-    BROWSER_BASED_APPLICATION:  PUBLIC,
-    NATIVE_APPLICATION:         PUBLIC
-}
 
 
 class Client(BaseModel):
-    type = StringField(required=True, choices=CLIENT_TYPES)
-    profile = StringField(required=True, choices=CLIENT_PROFILES)
+    name = StringField(required=True)
+    description = StringField(required=True)
     secret = StringField()
-    redirect_uri = ListField(field=URLField)
-
-    def clean(self):
-        super().clean()
-        self.type = CLIENT_PROFILE_TYPE_MAPPING.get(self.profile)
-        if self.type == CONFIDENTIAL:
-            self.secret = secrets.token_urlsafe()
-
-    def is_public(self):
-        return self.type == PUBLIC
+    authentication_methods = ListField(field=StringField)
 
 
 def mksalt():
