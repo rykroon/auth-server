@@ -20,7 +20,7 @@ def create_access_token(sub, ttl=None):
     }
 
     payload = {
-        "iss": 
+        "iss": "",
         "sub": sub,
         "exp": datetime.utcnow() + timedelta(seconds=ttl or JWT_ACCESS_TOKEN_TTL),
         "iat": datetime.utcnow(),
