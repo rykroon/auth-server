@@ -1,3 +1,6 @@
+from random import randint
+import secrets
+
 from flask import current_app, jsonify, request
 from flask.views import MethodView
 
@@ -44,13 +47,24 @@ class Login(MethodView):
     def email_link(self):
         email = request.json.get('email')
         user = User.objects.get(email=email)
+        if not user:
+            raise Exception
+
+        if not user.email_verified:
+            raise Exception
+
+        token = secrets.token_urlsafe()
         #send email
 
     def phone_number(self):
         phone_number = request.json.get('phone_number')
         user = User.objects.get(phone_number=phone_number)
+        if not user:
+            raise Exception
+
+        if not user.phone_number_verified:
+            raise Exception
+
+        otp = str(randint(0, 999999)).zfill(6)
         #send phone number
-
-
-
 
