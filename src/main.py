@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, g, jsonify
 from utils import JSONEncoder, get_redis_client, error_handlers
 
 
