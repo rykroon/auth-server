@@ -29,14 +29,22 @@ class Login(MethodView):
             self.phone_number()
 
     def password(self):
-        email = request.json.get('email')
+        identifier = request.json.get('identifier')
+        identifier_type = request.json.get('identifier_type')
         password = request.json.get('password')
-        user = User.objects.filter(email=email).first()
+        search = {
+            'client_id': self.client_id,
+            identifier_type: identifier
+        }
+        user = User.objects.filter(**search).first()
 
         if not user:
             raise Exception
 
-        if not user.email_verified:
+        if identifier_type == 'email' and not user.email_verified:
+            raise Exception
+
+        if identifier_type == 'phone_number' and not user.phone_number_verified:
             raise Exception
 
         if not user.check_password(password):
