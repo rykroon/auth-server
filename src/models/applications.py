@@ -1,10 +1,10 @@
-from mongoengine.fields import StringField
-from .base import BaseModel
+from mongoengine.fields import ObjectIdField, StringField
+from .base import BaseDocument
 
 
-class Application(BaseModel):
-    name = StringField()
+class Application(BaseDocument):
+    name = StringField(required=True)
     description = StringField()
-    client_id = ''
+    client_id = ObjectIdField()
 
     

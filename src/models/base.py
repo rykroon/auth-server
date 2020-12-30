@@ -4,7 +4,7 @@ from mongoengine import Document
 from mongoengine.fields import DateTimeField, UUIDField
 
 
-class BaseModel(Document):
+class BaseDocument(Document):
     meta = {
         'abstract': True
     }
