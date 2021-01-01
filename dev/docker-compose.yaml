@@ -1,14 +1,14 @@
 version: '3'
 services:
-  auth_svc:
-    build: ./dev
-    container_name: auth
-    # env_file:
-    #   - dev/.env
-    image: auth_img
+  api_svc:
+    build: 
+      context: ../
+      dockerfile: dev/Dockerfile
+    container_name: auth_api
+    image: auth_api_img
     networks:
       - auth_network
-mongodb_svc:
+  mongodb_svc:
     container_name: auth_mongo
     image: mongo
     networks:
