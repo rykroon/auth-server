@@ -1,4 +1,6 @@
 Flask==1.1.2
 gunicorn==20.0.4
 mongoengine==0.20.0
+phonenumbers==8.12.15
 PyJWT==1.7.1
+redis==3.5.3
