@@ -1,6 +1,7 @@
 import crypt
 from hashlib import sha256
 from mongoengine.fields import BooleanField, EmailField, ObjectIdField, StringField
+from .base.fields import PhoneNumberField
 from .base import BaseDocument
 
 
@@ -17,8 +18,8 @@ class User(BaseDocument):
     email = EmailField()
     email_verified = BooleanField(default=False)
 
-    phone_number = StringField()
-    phonenumber_verified = BooleanField(default=False)
+    phone_number = PhoneNumberField()
+    phone_number_verified = BooleanField(default=False)
 
     salt = StringField(required=True, default=mksalt)
     password = StringField(required=True)
