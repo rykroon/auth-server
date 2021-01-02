@@ -4,22 +4,37 @@ import uuid
 import jwt
 
 
-#These global values should be able to be configured at the client level
-jwt_secret_key = os.getenv('JWT_SECRET_KEY')
-jwt_access_token_expires = int(os.getenv('JWT_ACCESS_TOKEN_EXPIRES', 60 * 15)) #defaults to 15 minutes
-jwt_refresh_token_expires = int(os.getenv('JWT_REFRESH_TOKEN_EXPIRES', 60 * 60 * 24 * 30)) #defaults to 30 days
-
-
-def create_token(user, application, typ='at+jwt', **kwargs):
+def create_access_token(client, user, application):
     headers = {
-        "typ": typ
+        "typ": 'at+jwt'
     }
+
     now = time.time()
     payload = {
         "iss": 'auth.rykroon.com', #use ENV var
         "aud": application.pk,
         "sub": user.pk,
-        "exp": now + jwt_access_token_expires,
+        "exp": now + client.jwt_access_token_expires,
         "iat": now,
         "jti": str(uuid.uuid4())
     }
+
+    return jwt.encode(payload=payload, key=client.secret, headers=headers)
+
+
+def create_refresh_token(client, user, application):
+    headers = {
+        "typ": 'rt+jwt'
+    }
+
+    now = time.time()
+    payload = {
+        "iss": 'auth.rykroon.com', #use ENV var
+        "aud": application.pk,
+        "sub": user.pk,
+        "exp": now + client.jwt_refresh_token_expires,
+        "iat": now,
+        "jti": str(uuid.uuid4())
+    }
+
+    return jwt.encode(payload=payload, key=client.secret, headers=headers)
