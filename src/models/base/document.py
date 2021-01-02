@@ -9,7 +9,7 @@ class BaseDocument(Document):
         'abstract': True
     }
 
-    uuid = UUIDField(required=True, default=uuid.uuid4, unique=True)
+    id = UUIDField(primary_key=True, default=uuid.uuid4)
     date_created = DateTimeField(required=True, default=datetime.utcnow)
     date_updated = DateTimeField(required=True)
     date_deleted = DateTimeField(null=True)

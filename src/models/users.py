@@ -1,6 +1,6 @@
 import crypt
 from hashlib import sha256
-from mongoengine.fields import BooleanField, EmailField, ObjectIdField, StringField
+from mongoengine.fields import BooleanField, EmailField, StringField, UUIDField
 from .base.fields import PhoneNumberField
 from .base import BaseDocument
 
@@ -26,7 +26,7 @@ class User(BaseDocument):
 
     is_active = BooleanField(default=True)
 
-    client_id = ObjectIdField()
+    client_id = UUIDField(required=True)
 
     @property
     def client(self):

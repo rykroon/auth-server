@@ -13,6 +13,9 @@ class PhoneNumberField(StringField):
         super().__init__(*args, **kwargs)
 
     def __set__(self, instance, value):
+        if not value.startswith('+'):
+            value = '+{}'.format(value)
+            
         try:
             phone_number = phonenumbers.parse(value)
             value = phonenumbers.format_number(phone_number, PhoneNumberFormat.E164)
