@@ -38,3 +38,42 @@ def create_refresh_token(client, user, application):
     }
 
     return jwt.encode(payload=payload, key=client.secret, headers=headers)
+
+
+def verify_access_token(token, client):
+    headers = jwt.get_unverified_header(token)
+    if headers.get('typ') != 'at+jwt':
+        return False
+
+    try:
+        payload = jwt.decode(token, client.secret)
+    except Exception:
+        return False
+
+    issuer = payload.get('iss')
+    audience = payload.get('aud')
+
+
+    if issuer != 'auth.rykroon.com':
+        return False
+
+    #check audience
+
+
+def verify_refresh_token(token, client):
+    headers = jwt.get_unverified_header(token)
+    if headers.get('typ') != 'rt+jwt':
+        return False
+
+    try:
+        payload = jwt.decode(token, client.secret)
+    except Exception:
+        return False
+
+    issuer = payload.get('iss')
+    audience = payload.get('aud')
+
+    if issuer != 'auth.rykroon.com':
+        return False
+
+    #check audience
