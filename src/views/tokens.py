@@ -45,7 +45,12 @@ class TokenView(BaseView):
         identifier = self.get_param('identifier')
         password = self.get_param('password')
 
-        self.user = self.get_document(User, identifier_type=identifier, client_id=self.client.pk)
+        filter_ = {
+            identifier_type: identifier,
+            'client_id': self.client.pk
+        }
+
+        self.user = self.get_document(User, **filter_)
         if not self.user.check_password(password):
             raise Unauthorized("Invalid {} or password".format(identifier_type))
 
