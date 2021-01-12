@@ -40,6 +40,25 @@ def create_refresh_token(client, user, application):
     return jwt.encode(payload=payload, key=client.secret, headers=headers)
 
 
+def create_email_verification_token(client, user, email):
+    headers = {
+        "typ": 'email_verification'
+    }
+
+    now = time.time()
+    payload = {
+        "iss": 'auth.rykroon.com', #use ENV var
+        #"aud": application.pk,
+        "sub": user.pk,
+        "exp": now + client.email_verification_expires,
+        "iat": now,
+        "jti": str(uuid.uuid4()),
+        "email": email
+    }
+
+    return jwt.encode(payload=payload, key=client.secret, headers=headers)
+
+
 def verify_access_token(token, client):
     headers = jwt.get_unverified_header(token)
     if headers.get('typ') != 'at+jwt':
@@ -58,6 +77,7 @@ def verify_access_token(token, client):
         return False
 
     #check audience
+    return True
 
 
 def verify_refresh_token(token, client):
@@ -77,3 +97,4 @@ def verify_refresh_token(token, client):
         return False
 
     #check audience
+    return True
