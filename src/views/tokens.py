@@ -8,7 +8,7 @@ from utils import create_access_token, create_refresh_token
 from .base import BaseView
 
 
-AUTH_METHOD_CHOICES = ('password', 'email', 'phone_number', 'refresh_token')
+AUTH_METHOD_CHOICES = ('password', 'refresh_token')
 IDENTIFIER_TYPES = ('username', 'email', 'phone_number')
 
 
@@ -23,12 +23,6 @@ class TokenView(BaseView):
 
         if auth_method == 'password':
             self.password()
-
-        elif auth_method == 'email':
-            self.email()
-
-        elif auth_method == 'phone_number':
-            self.phone_number()
 
         elif auth_method == 'refresh_token':
             self.refresh_token()
@@ -53,27 +47,6 @@ class TokenView(BaseView):
         self.user = self.get_document(User, **filter_)
         if not self.user.check_password(password):
             raise Unauthorized("Invalid {} or password".format(identifier_type))
-
-    def email(self):
-        email = self.get_param('email')
-        self.user = self.get_document(User, email=email, client_id=self.client.pk)
-        if not self.user.email_verified:
-            raise Conflict("The email has not been verified.")
-
-        otp = str(randint(0, 999999)).zfill(6)
-        #send the one time password to the email
-
-        #might use a different endpoint to send the OTPs, and then use this endpoint to verify
-
-    def phone_number(self):
-        phone_number = self.get_param('phone_number')
-        self.user = self.get_document(User, phone_number=phone_number, client_id=self.client.pk)
-        if not self.user.phone_number_verified:
-            raise Conflict("The phone number has not been verified.")
-
-        otp = str(randint(0, 999999)).zfill(6)
-
-        #send one-time-password to phone-number
 
     def refresh_token(self):
         refresh_token = self.get_param('refresh_token')
