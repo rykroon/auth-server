@@ -18,3 +18,6 @@ class UserEmailView(BaseView):
 
         #use sendgrid to send email verification
         
+
+user_email_view = UserEmailView.as_view('UserEmailView')
+bp.add_url_rule('/users/<str: user_id>/emails', view_func=user_email_view, methods=['PUT'])
