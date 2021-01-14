@@ -1,17 +1,23 @@
-from flask import Blueprint
-from .base import BaseView
+from flask import Blueprint, jsonify, request
+from .base import APIView
+from models import User
+from restapi import HmacAuthentication
 
 
 bp = Blueprint('users', __name__)
 
 
-class UserView(BaseView):
+class UserView(APIView):
+
+    authentication_classes = [HmacAuthentication]
 
     def get(self):
         pass
 
     def post(self):
-        pass
+        user = User(**request.json)
+        user.save()
+        return jsonify(user)
 
     def put(self):
         pass
