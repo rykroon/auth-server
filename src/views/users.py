@@ -15,9 +15,10 @@ class UserView(APIView):
         pass
 
     def post(self):
-        user = User(**request.json)
+        payload = request.get_json()
+        user = User(**payload)
         user.save()
-        return jsonify(user)
+        return jsonify(user.to_dict())
 
     def put(self):
         pass

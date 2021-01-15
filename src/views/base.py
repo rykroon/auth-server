@@ -1,6 +1,7 @@
-from flask import g, request
+from flask import current_app, g, request
 from flask.views import MethodView
-from werkzeug.exceptions import BadRequest
+from mongoengine.errors import ValidationError
+from werkzeug.exceptions import BadRequest, InternalServerError
 
 
 class BaseView(MethodView):
@@ -52,11 +53,15 @@ class APIView(MethodView):
     permission_classes = []
     throttle_classes = []
 
-    def dispatch_request(self):
-        self._perform_authentication()
-        self._check_permissions()
-        self._check_throttles()
-        return super().dispatch_request()
+    def dispatch_request(self, *args , **kwargs):
+        #self._perform_authentication()
+        #self._check_permissions()
+        #self._check_throttles()
+
+        try:
+            return super().dispatch_request(*args, **kwargs)
+        except ValidationError as e:
+            raise BadRequest(str(e))
 
     def _perform_authentication(self):
         for auth_class in self.authentication_classes:
