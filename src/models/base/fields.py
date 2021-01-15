@@ -1,3 +1,5 @@
+import re
+from flask import current_app
 from mongoengine.fields import StringField
 from mongoengine.errors import ValidationError
 import phonenumbers
@@ -12,29 +14,16 @@ class PhoneNumberField(StringField):
         self.check_is_valid_number = check_is_valid_number
         super().__init__(*args, **kwargs)
 
-    def __set__(self, instance, value):
-        if not value.startswith('+'):
-            value = '+{}'.format(value)
-            
-        try:
-            phone_number = phonenumbers.parse(value)
-            value = phonenumbers.format_number(phone_number, PhoneNumberFormat.E164)
-
-        except phonenumberutil.NumberParseException:
-            pass
-
-        super().__set__(instance, value)
-
-
-    def validate(self, value):
+    def validate(self, value, clean=True):
         super().validate(value)
 
-        try:
-            phone_number = phonenumbers.parse(value)
-        except phonenumberutil.NumberParseException:
-            self.error(self.error_msg % value)
-
-        if self.check_is_valid_number:
-            if not phonenumbers.is_valid_number(phone_number):
+        if value is not None:
+            try:
+                phone_number = phonenumbers.parse(value)
+            except phonenumberutil.NumberParseException:
                 self.error(self.error_msg % value)
+
+            if self.check_is_valid_number:
+                if not phonenumbers.is_valid_number(phone_number):
+                    self.error(self.error_msg % value)
 

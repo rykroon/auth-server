@@ -1,5 +1,6 @@
 import crypt
 from hashlib import sha256
+import re
 import string
 from mongoengine.errors import ValidationError
 from mongoengine.fields import BooleanField, EmailField, StringField, UUIDField
@@ -21,22 +22,19 @@ def validate_username(username):
 
 
 class User(BaseDocument):
-    username = StringField(max_length=150, validation=validate_username)
-
     first_name = StringField()
     last_name = StringField()
-    
+    username = StringField(max_length=150, validation=validate_username)
+
     email = EmailField()
     email_verified = BooleanField(default=False)
-
     phone_number = PhoneNumberField()
     phone_number_verified = BooleanField(default=False)
 
     salt = StringField(required=True, default=mksalt)
     password = StringField(required=True)
-
+    
     is_active = BooleanField(default=True)
-
     client_id = UUIDField(required=True)
 
     @property
@@ -51,3 +49,8 @@ class User(BaseDocument):
         salted_password = "{}{}".format(password, self.salt)
         hashed_password = sha256(salted_password.encode()).hexdigest()
         return self.password == hashed_password
+
+    def clean(self):
+        super().clean()
+        if self.phone_number is not None:
+            self.phone_number = '+{}'.format(re.sub('[^0-9]', '', self.phone_number))
