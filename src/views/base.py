@@ -13,7 +13,8 @@ class BaseView(MethodView):
             :param default: The default value of the parameter
             :param choices: The valid choices for the parameter
         """
-        param = request.json.get(param_name, default=default)
+        payload = request.get_json() or {}
+        param = payload.get(param_name, default)
         if required and param is None:
             raise BadRequest("Missing parameter '{}'.".format(param_name))
 
@@ -27,23 +28,6 @@ class BaseView(MethodView):
         if doc is None:
             raise BadRequest("Invalid '{}'.".format(doc_cls.__name__))
         return doc
-
-    @classmethod
-    def register_api(cls, blueprint, url, pk='id', pk_type='int', create=False, list_=False, get=False, update=False, delete=False):
-        view_func = cls.as_view(cls.__name__)
-        if create:
-            blueprint.add_url_rule(url, view_func=view_func, methods=['POST'])
-
-        if list_:
-            blueprint.add_url_rule(url, defaults={pk: None}, view_func=view_func, methods=['GET'])
-
-        if get or update or delete:
-            z = zip(('GET', 'UPDATE', 'DELETE'), (get, update, delete))
-            methods = [m for m, b in z if b]
-            blueprint.add_url_rule('{}<{}:{}>'.format(url, pk_type, pk),
-                view_func=view_func,
-                methods=methods
-            )
 
 
 class APIView(MethodView):
