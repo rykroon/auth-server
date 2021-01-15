@@ -1,12 +1,14 @@
 from random import randint
 
-from flask import jsonify, request
+from flask import Blueprint, jsonify, request
 from werkzeug.exceptions import BadRequest, Conflict, Unauthorized
 
 from models import Application, Client, User
 from utils import create_access_token, create_refresh_token
 from .base import BaseView
 
+
+bp = Blueprint('tokens', __name__)
 
 AUTH_METHOD_CHOICES = ('password', 'refresh_token')
 IDENTIFIER_TYPES = ('username', 'email', 'phone_number')
@@ -52,4 +54,7 @@ class TokenView(BaseView):
         refresh_token = self.get_param('refresh_token')
         #verify the refresh token using self.client.secret as the key
 
+
+token_view = TokenView.as_view('TokeView')
+bp.add_url_rule('/tokens', view_func=token_view, methods=['POST'])
 

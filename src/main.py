@@ -11,8 +11,9 @@ def create_app():
     app.logger.handlers = gunicorn_logger.handlers
     app.logger.setLevel(gunicorn_logger.level)
 
-    from views import users_bp
+    from views import users_bp, token_bp
     app.register_blueprint(users_bp)
+    app.register_blueprint(token_bp)
 
     for exc, handler in error_handlers.items():
         app.register_error_handler(exc, handler)
