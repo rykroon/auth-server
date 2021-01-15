@@ -5,6 +5,8 @@ services:
       context: ../
       dockerfile: dev/Dockerfile
     container_name: auth_api
+    env_file: 
+      - .env
     image: auth_api_img
     networks:
       - auth_network
