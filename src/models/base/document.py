@@ -1,15 +1,14 @@
 from datetime import datetime
 import uuid
-from mongoengine import Document, QuerySet
+from mongoengine import Document
 from mongoengine.errors import DoesNotExist
-from mongoengine.fields import DateTimeField, ObjectIdField, UUIDField
+from mongoengine.fields import DateTimeField, UUIDField
 from werkzeug.exceptions import NotFound
 
 
 class BaseDocument(Document):
     meta = {
         'abstract': True,
-        'queryset_class': BaseQuerySet
     }
 
     id = UUIDField(primary_key=True, default=uuid.uuid4)
@@ -19,5 +18,10 @@ class BaseDocument(Document):
 
     def clean(self):
         self.date_updated = datetime.utcnow()
+
+    def to_dict(self):
+        return {f: getattr(self, f) for f in self._fields}
+        
+
 
 
