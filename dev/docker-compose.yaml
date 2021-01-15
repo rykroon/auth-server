@@ -8,12 +8,27 @@ services:
     image: auth_api_img
     networks:
       - auth_network
+    ports:
+      - "80:8000"
+    volumes:
+      - '../src:/app/host_src'
+    working_dir: /app/host_src
+
   mongodb_svc:
     container_name: auth_mongo
     image: mongo
     networks:
-        - auth_network
+      - auth_network
     ports:
-        - "27017:27017"
+      - "27017:27017"
+
+  redis_svc:
+    container_name: auth_redis
+    image: redis
+    networks:
+      - auth_network
+    ports:
+      - "6379:6379"
+
 networks:
   auth_network:
