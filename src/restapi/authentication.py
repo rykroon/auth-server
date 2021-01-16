@@ -25,7 +25,7 @@ class BaseAuthenticator:
         if scheme != self.scheme:
             return None
 
-        return self.validate_credentials(credentials)
+        return self.authenticate_credentials(credentials)
 
     def authenticate_credentials(self, credentials):
         raise NotImplementedError
