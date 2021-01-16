@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, g, jsonify, request
 from .base import APIView
 from models import User
 from restapi import HmacAuthentication
@@ -17,6 +17,7 @@ class UserView(APIView):
     def post(self):
         payload = request.get_json()
         user = User(**payload)
+        user.client_id = g.client.pk
         user.save()
         return jsonify(user.to_dict())
 
