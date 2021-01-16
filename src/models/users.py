@@ -41,10 +41,6 @@ class User(BaseDocument):
     def client(self):
         pass
 
-    def set_password(self, password):
-        salted_password = "{}{}".format(password, self.salt)
-        self.password = sha256(salted_password.encode()).hexdigest()
-
     def check_password(self, password):
         salted_password = "{}{}".format(password, self.salt)
         hashed_password = sha256(salted_password.encode()).hexdigest()
@@ -52,5 +48,27 @@ class User(BaseDocument):
 
     def clean(self):
         super().clean()
+
+        if self.pk is None:
+            fields = list(self._fields.keys())
+        else:
+            fields = self._get_changed_fields()
+
+        for field in fields:
+            clean_method_name = '_clean_{}'.format(field)
+            clean_method = getattr(self, clean_method_name, None)
+            if clean_method:
+                clean_method()
+
+    def _clean_phone_number(self):
+        """
+            make sure the phone number begins with a "+" 
+            and only contains digits
+        """
         if self.phone_number is not None:
             self.phone_number = '+{}'.format(re.sub('[^0-9]', '', self.phone_number))
+
+    def _clean_password(self):
+        if self.password is not None:
+            salted_password = "{}{}".format(self.password, self.salt)
+            self.password = sha256(salted_password.encode()).hexdigest()
