@@ -1,6 +1,6 @@
 from random import randint
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, g, jsonify, request
 from werkzeug.exceptions import BadRequest, Conflict, Unauthorized
 
 from models import Application, Client, User
@@ -18,8 +18,14 @@ class TokenView(BaseView):
 
     def post(self):
         application_id = self.get_param('application_id')
-        self.application = self.get_document(Application, pk=application_id, is_active=True)
-        self.client = self.get_document(Client, pk=self.application.client_id)
+        self.application = Application.objects.get_or_400(
+            pk=application_id,
+            is_active=True
+        )
+
+        self.client = Client.objects.get_or_400(
+            pk=self.application.client_id
+        )
 
         auth_method = self.get_param('auth_method', choices=AUTH_METHOD_CHOICES)
 
@@ -46,8 +52,11 @@ class TokenView(BaseView):
             'client_id': self.client.pk
         }
 
-        self.user = self.get_document(User, **filter_)
-        if not self.user.check_password(password):
+        self.user = User.objects.filter(
+            **filter_
+        ).first()
+
+        if self.user is None or not self.user.check_password(password)
             raise Unauthorized("Invalid {} or password".format(identifier_type))
 
     def refresh_token(self):

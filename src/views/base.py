@@ -23,12 +23,6 @@ class BaseView(MethodView):
 
         return param
 
-    def get_document(self, doc_cls, **kwargs):
-        doc = doc_cls.objects.filter(**kwargs).first()
-        if doc is None:
-            raise BadRequest("Invalid '{}'.".format(doc_cls.__name__))
-        return doc
-
 
 class APIView(MethodView):
     #inspired by Django Rest Framework
