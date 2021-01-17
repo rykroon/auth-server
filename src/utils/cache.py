@@ -28,7 +28,12 @@ class Cache:
     def delete(self, key):
         return g.redis_client.delete(self._make_key(key)) == 1
 
+    def touch(self, key, timeout=None):
+        timeout = timeout or self.default_timeout
+        return g.redis_client.expire(self._make_key(key), timeout)
+
     def _make_key(self, key):
+        if 
         if self.key_prefix:
             return '{}:{}'.format(self.key_prefix, key)
         return key
