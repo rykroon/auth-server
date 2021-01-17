@@ -4,8 +4,7 @@ import re
 import string
 from mongoengine.errors import ValidationError
 from mongoengine.fields import BooleanField, EmailField, StringField, UUIDField
-from .base.fields import PhoneNumberField
-from .base import BaseDocument
+from .mongoengineext import BaseDocument, PhoneNumberField
 
 
 def mksalt():

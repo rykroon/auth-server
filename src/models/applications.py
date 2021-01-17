@@ -1,5 +1,5 @@
 from mongoengine.fields import BooleanField, StringField, UUIDField
-from .base import BaseDocument
+from .mongoengineext import BaseDocument
 
 
 APPLICATION_TYPES = ('NATIVE', 'WEB')
