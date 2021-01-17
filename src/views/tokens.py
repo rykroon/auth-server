@@ -18,13 +18,17 @@ class TokenView(BaseView):
 
     def post(self):
         application_id = self.get_param('application_id')
-        self.application = Application.objects.get_or_400(
+        self.application = Application.objects.filter(
             pk=application_id,
             is_active=True
+        ).first_or_400(
+            msg='Invalid application_id.'
         )
 
-        self.client = Client.objects.get_or_400(
+        self.client = Client.objects.filter(
             pk=self.application.client_id
+        ).first_or_400(
+            msg='Invalid client.'
         )
 
         auth_method = self.get_param('auth_method', choices=AUTH_METHOD_CHOICES)
