@@ -12,7 +12,7 @@ from models import Client
 from utils import Cache
 
 
-class BaseAuthenticator:
+class BaseAuthentication:
     scheme = None
 
     def authenticate(self):
@@ -31,7 +31,7 @@ class BaseAuthenticator:
         raise NotImplementedError
 
 
-class BasicAuthentication(BaseAuthenticator):
+class BasicAuthentication(BaseAuthentication):
     scheme = 'Basic'
 
     def authenticate_credentials(self, credentials):
@@ -48,7 +48,7 @@ class BasicAuthentication(BaseAuthenticator):
         return client
 
 
-class HmacAuthentication(BaseAuthenticator):
+class HmacAuthentication(BaseAuthentication):
     scheme = 'HMAC'
 
     def authenticate_credentials(self, credentials):
