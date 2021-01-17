@@ -1,6 +1,6 @@
 import secrets
 from mongoengine.fields import IntField, StringField
-from .base import BaseDocument
+from .mongoengineext import BaseDocument
 
 
 def generate_secret():
