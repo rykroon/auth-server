@@ -60,7 +60,7 @@ class TokenView(BaseView):
             **filter_
         ).first()
 
-        if self.user is None or not self.user.check_password(password)
+        if self.user is None or not self.user.check_password(password):
             raise Unauthorized("Invalid {} or password".format(identifier_type))
 
     def refresh_token(self):

@@ -1,7 +1,6 @@
 from flask import Blueprint, g, jsonify, request
-from .base import APIView
 from models import User
-from rest_framework import HmacAuthentication
+from rest_framework import APIView, HmacAuthentication
 
 
 bp = Blueprint('users', __name__)

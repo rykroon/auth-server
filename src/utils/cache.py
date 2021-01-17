@@ -33,7 +33,6 @@ class Cache:
         return g.redis_client.expire(self._make_key(key), timeout)
 
     def _make_key(self, key):
-        if 
         if self.key_prefix:
             return '{}:{}'.format(self.key_prefix, key)
         return key
