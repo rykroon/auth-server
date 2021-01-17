@@ -19,12 +19,19 @@ class BaseDocument(Document):
     date_deleted = DateTimeField(null=True)
 
     def clean(self):
-        if self.pk is None or self._get_changed_fields():
+        super().clean()
+
+        fields = list(self._fields) if self.pk is None else self._get_changed_fields()
+
+        if fields:
             self.date_updated = datetime.utcnow()
+
+        for field in fields:
+            clean_method_name = '_clean_{}'.format(field)
+            clean_method = getattr(self, clean_method_name, None)
+            if clean_method:
+                clean_method()
 
     def to_dict(self):
         return {f: getattr(self, f) for f in self._fields}
-        
-
-
 

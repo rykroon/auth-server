@@ -45,20 +45,6 @@ class User(BaseDocument):
         hashed_password = sha256(salted_password.encode()).hexdigest()
         return self.password == hashed_password
 
-    def clean(self):
-        super().clean()
-
-        if self.pk is None:
-            fields = list(self._fields.keys())
-        else:
-            fields = self._get_changed_fields()
-
-        for field in fields:
-            clean_method_name = '_clean_{}'.format(field)
-            clean_method = getattr(self, clean_method_name, None)
-            if clean_method:
-                clean_method()
-
     def _clean_phone_number(self):
         """
             make sure the phone number begins with a "+" 
