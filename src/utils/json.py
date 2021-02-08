@@ -3,6 +3,8 @@ from decimal import Decimal
 import json
 from uuid import UUID
 
+from mongoengine import Document
+
 
 class JSONEncoder(json.JSONEncoder):
     def default(self, o):
@@ -17,6 +19,9 @@ class JSONEncoder(json.JSONEncoder):
 
         if isinstance(o, UUID):
             return str(o)
+
+        if isinstance(o, Document):
+            return o._data
 
         return super().default(o)
 
