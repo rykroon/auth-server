@@ -31,7 +31,7 @@ class BaseAuthentication:
         raise NotImplementedError
 
 
-class BasicAuthentication(BaseAuthentication):
+class BasicAuthentication(BaseAuthenticator):
     scheme = 'Basic'
 
     def authenticate_credentials(self, credentials):
