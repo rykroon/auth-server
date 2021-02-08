@@ -18,7 +18,7 @@ class APIView(MethodView):
         try:
             return super().dispatch_request(*args, **kwargs)
         except ValidationError as e:
-            raise BadRequest(str(e))
+            raise BadRequest(e.to_dict())
 
     def _perform_authentication(self):
         for auth_class in self.authentication_classes:
