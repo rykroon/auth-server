@@ -13,7 +13,7 @@ class BaseDocument(Document):
         'queryset': BaseQueryset
     }
 
-    id = UUIDField(primary_key=True, default=uuid.uuid4)
+    uuid = UUIDField(default=uuid.uuid4)
     date_created = DateTimeField(required=True, default=datetime.utcnow)
     date_updated = DateTimeField(required=True)
     date_deleted = DateTimeField(null=True)

@@ -3,7 +3,7 @@ from hashlib import sha256
 import re
 import string
 from mongoengine.errors import ValidationError
-from mongoengine.fields import BooleanField, EmailField, StringField, UUIDField
+from mongoengine.fields import BooleanField, EmailField, ObjectIdField, StringField, UUIDField
 from .mongoengineext import BaseDocument, PhoneNumberField
 
 
@@ -21,6 +21,7 @@ def validate_username(username):
 
 
 class User(BaseDocument):
+    client_id = ObjectIdField(required=True)
     first_name = StringField()
     last_name = StringField()
     username = StringField(max_length=150, validation=validate_username)
@@ -34,7 +35,6 @@ class User(BaseDocument):
     password = StringField(required=True)
     
     is_active = BooleanField(default=True)
-    client_id = UUIDField(required=True)
 
     @property
     def client(self):
